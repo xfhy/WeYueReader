@@ -2,6 +2,7 @@ package com.lianglu.weyue.model;
 
 /**
  * Created by Liang_Lu on 2018/1/22.
+ * 版本更新bean
  */
 
 public class AppUpdateBean {

@@ -32,7 +32,7 @@ public class VMSettingInfo extends BaseViewModel {
         mISetting.showLoading();
         RxHttpUtils.getSInstance().addHeaders(tokenMap()).createSApi(UserService.class)
                 .appUpdate()
-                .compose(Transformer.switchSchedulers())
+                .compose(Transformer.switchSchedulers())   //线程的切换
                 .subscribe(new RxObserver<AppUpdateBean>() {
                     @Override
                     protected void onError(String errorMsg) {

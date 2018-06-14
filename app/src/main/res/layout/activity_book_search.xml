@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--
+        android:background="?attr/colorPrimary"
+        这里的颜色是主题(style)里面的,可以在清单文件中配置
+    -->
     <com.lianglu.weyue.widget.theme.ColorView
         android:id="@+id/status_bar"
         android:layout_width="match_parent"

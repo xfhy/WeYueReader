@@ -14,7 +14,7 @@ public class Constant {
     public static String BASE_URL;
 
     static {
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
 //            BASE_URL = "http://192.168.1.121:3389";
             BASE_URL = "http://192.168.5.87:3389";
         } else {

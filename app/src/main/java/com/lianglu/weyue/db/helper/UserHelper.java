@@ -6,6 +6,8 @@ import com.lianglu.weyue.db.gen.UserBeanDao;
 
 /**
  * Created by Liang_Lu on 2018/1/5.
+ *
+ * 用户信息->数据库  操作类
  */
 
 public class UserHelper {

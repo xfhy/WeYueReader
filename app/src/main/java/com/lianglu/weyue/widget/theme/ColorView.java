@@ -19,6 +19,7 @@ public class ColorView extends View implements ColorUiInterface {
 
     public ColorView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        //从attrs中获取背景属性  获取背景属性
         this.attr_background = ViewAttributeUtil.getBackgroundAttibute(attrs);
     }
 

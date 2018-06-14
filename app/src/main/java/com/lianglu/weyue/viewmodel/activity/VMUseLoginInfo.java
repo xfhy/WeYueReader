@@ -39,6 +39,8 @@ public class VMUseLoginInfo extends BaseViewModel {
                     protected void onSuccess(UserBean userBean) {
                         ToastUtils.show("登录成功");
                         UserHelper.getsInstance().saveUser(userBean);
+
+                        //将token和用户名存入SP
                         SharedPreUtils.getInstance().putString("token", userBean.getToken());
                         SharedPreUtils.getInstance().putString("username", userBean.name);
                         ((BaseActivity) mContext).finish();

@@ -14,15 +14,25 @@ import android.widget.TextView;
  */
 public class ViewAttributeUtil {
 
+    /**
+     * 根据传入的attr获取某个属性(paramInt)的值
+     *
+     * @param attr
+     * @param paramInt 某个属性  比如android.R.attr.background
+     */
     public static int getAttributeValue(AttributeSet attr, int paramInt) {
         int value = -1;
+        //获取属性个数
         int count = attr.getAttributeCount();
+        //循环遍历每个属性
         for (int i = 0; i < count; i++) {
-            if (attr.getAttributeNameResource(i) == paramInt) {
-                String str = attr.getAttributeValue(i);
+            //返回的是与特定的XML相关联的资源标识符属性名称(比如android.R.attr.background)  如果与paramInt相同,则进入
+            if (attr.getAttributeNameResource(i) == paramInt) {  //值形如16842964
+                //获取该属性  将指定属性的值作为字符串表示形式进行处理。
+                String str = attr.getAttributeValue(i);  //值形如 ?2130968688
                 if (null != str && str.startsWith("?")) {
-                    value = Integer.valueOf(str.substring(1, str.length())).intValue();
-                    return value;
+                    value = Integer.valueOf(str.substring(1, str.length()));   //去掉最前面的问号
+                    return value;   //值形如 2130968688
                 }
             }
         }
@@ -57,13 +67,20 @@ public class ViewAttributeUtil {
         return getAttributeValue(attr, android.R.attr.textColorLink);
     }
 
+    /**
+     * 读取background并设置到view上
+     */
     public static void applyBackgroundDrawable(ColorUiInterface ci, Resources.Theme theme, int paramInt) {
+        //返回一个与 attrs 中列举出的属性相关的数组，数组里面的值由 Theme 指定
         TypedArray ta = theme.obtainStyledAttributes(new int[]{paramInt});
-        Drawable drawable = ta.getDrawable(0);
-        if (null != ci) {
-            (ci.getView()).setBackgroundDrawable(drawable);
+        if (ta != null && ta.length() == 1) {
+            Drawable drawable = ta.getDrawable(0);
+            if (null != ci) {
+                (ci.getView()).setBackgroundDrawable(drawable);
+            }
+            ta.recycle();
         }
-        ta.recycle();
+
     }
 
     public static void applyImageDrawable(ColorUiInterface ci, Resources.Theme theme, int paramInt) {

@@ -83,27 +83,31 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
     AppCompatImageView mIvToolBarBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvToolBarTitle;
-    private MainMenuAdapter mainMenuAdapter;
 
     private FragmentManager fragmentManager;
     private String currentFragmentTag;
     private List<MainMenuBean> menuBeans = new ArrayList<>();
-    private long fristTime = 0;
-    private VMSettingInfo mModel;
+    private long firstTime = 0;
     private String mUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mModel = new VMSettingInfo(this, this);
-        setBinddingView(R.layout.activity_main, NO_BINDDING, mModel);
+
+        //是否需要更新的model
+        VMSettingInfo model = new VMSettingInfo(this, this);
+
+        setBinddingView(R.layout.activity_main, NO_BINDDING, model);
+
         initThemeToolBar("分类", R.drawable.ic_classify, R.drawable.ic_search, v -> {
             mResideLayout.openPane();
         }, v -> {
             startActivity(BookSearchActivity.class);
         });
 
-        mModel.appUpdate(false);
+        //一进入APP 就检查更新
+        model.appUpdate(false);
+
         fragmentManager = getSupportFragmentManager();
 
         initMenu();
@@ -117,7 +121,7 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
 
         getMenuData();
         mRvMenu.setLayoutManager(new LinearLayoutManager(mContext));
-        mainMenuAdapter = new MainMenuAdapter(menuBeans);
+        MainMenuAdapter mainMenuAdapter = new MainMenuAdapter(menuBeans);
         mRvMenu.setAdapter(mainMenuAdapter);
         mainMenuAdapter.setOnItemClickListener((adapter, view, position) -> {
             String name = menuBeans.get(position).getName();
@@ -339,27 +343,43 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
             SharedPreUtils.getInstance().setCurrentTheme(Theme.Cyan);
 
         }
+
+
         final View rootView = getWindow().getDecorView();
+        //开启了cache, 则使用它的cache进行绘制，从而节省绘制时间。
         rootView.setDrawingCacheEnabled(true);
         rootView.buildDrawingCache(true);
 
+        /*
+        * 思想,先截屏存入Bitmap,创建一个临时View,将bitmap设置为该view的背景,然后将view添加到DecorView中(作为遮罩),
+        * 然后给view设置一个透明度动画(从有到无),与此同时动画一开始就开始切换主题(偷天换日),然后动画结束时将View从DecorView中移除,回收bitmap
+        * */
+
+        //获取绘制的缓存的bitmap对象
         final Bitmap localBitmap = Bitmap.createBitmap(rootView.getDrawingCache());
         rootView.setDrawingCacheEnabled(false);
         if (null != localBitmap && rootView instanceof ViewGroup) {
+            //构建一个view
             final View tmpView = new View(getApplicationContext());
+            //将此view设置背景为之前获取到的bitmap
             tmpView.setBackgroundDrawable(new BitmapDrawable(getResources(), localBitmap));
+            //将VIew设置为占满
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            //将view添加到rootView中
             ((ViewGroup) rootView).addView(tmpView, params);
-            tmpView.animate().alpha(0).setDuration(400).setListener(new Animator.AnimatorListener() {
+            tmpView.animate().alpha(0).setDuration(2000).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
+                    //动画开始则就去开始改变主题  设置给所有view当前用户设置的主题
                     ColorUiUtil.changeTheme(rootView, getTheme());
                     System.gc();
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    //动画结束时将这个暂时的view移除
                     ((ViewGroup) rootView).removeView(tmpView);
+                    //回收bitmap
                     localBitmap.recycle();
                 }
 
@@ -418,11 +438,11 @@ public class MainActivity extends BaseActivity implements ColorChooserDialog.Col
             mResideLayout.closePane();
         } else {
             long secondTime = System.currentTimeMillis();
-            if (secondTime - fristTime < 2000) {
+            if (secondTime - firstTime < 2000) {
                 finish();
             } else {
                 SnackBarUtils.makeShort(getWindow().getDecorView(), "再点击一次退出应用").show();
-                fristTime = System.currentTimeMillis();
+                firstTime = System.currentTimeMillis();
             }
         }
     }

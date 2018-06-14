@@ -40,11 +40,8 @@ public class BaseActivity extends AppCompatActivity {
     protected static int NO_BINDDING = -1;//不用绑定布局
 
     protected Context mContext;
-    private Toolbar mToolbar;
     protected BaseViewModel mModel;
     private Unbinder mUnbinder;
-    private boolean isSlideBack = true;//是否设置滑动返回
-    private ColorView mStatusBar;
 
 
     @Override
@@ -53,6 +50,8 @@ public class BaseActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             setTranslucentStatus(true);
         }
+
+        //设置主题
         onPreCreate();
     }
 
@@ -165,13 +164,13 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void initStatusBar() {
-        mStatusBar = findViewById(R.id.status_bar);
+        ColorView statusBar = findViewById(R.id.status_bar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mStatusBar.setVisibility(View.VISIBLE);
-            mStatusBar.getLayoutParams().height = SystemUtils.getStatusHeight(this);
-            mStatusBar.setLayoutParams(mStatusBar.getLayoutParams());
+            statusBar.setVisibility(View.VISIBLE);
+            statusBar.getLayoutParams().height = SystemUtils.getStatusHeight(this);
+            statusBar.setLayoutParams(statusBar.getLayoutParams());
         } else {
-            mStatusBar.setVisibility(View.GONE);
+            statusBar.setVisibility(View.GONE);
         }
     }
 

@@ -118,9 +118,6 @@ public class UserInfoActivity extends BaseActivity implements IUserInfo, TakePho
 
     private InvokeParam invokeParam;
     private VMUserInfo mModel;
-    private String mNewPassword;
-    private String mUsername;
-    private UserBean mUserBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,14 +140,14 @@ public class UserInfoActivity extends BaseActivity implements IUserInfo, TakePho
         }
         mToolbarLayout.setTitle("用户信息");
 
-        mUsername = SharedPreUtils.getInstance().getString("username", "");
-        mUserBean = UserHelper.getsInstance().findUserByName(mUsername);
+        String username = SharedPreUtils.getInstance().getString("username", "");
+        UserBean userBean = UserHelper.getsInstance().findUserByName(username);
 
         mModel.getUserInfo();
-        mEtBrief.setText(mUserBean.getBrief());
-        mTvName.setText(mUsername);
-        mEtNickName.setText(mUserBean.getNickname());
-        Glide.with(mContext).load(Constant.BASE_URL + mUserBean.getIcon())
+        mEtBrief.setText(userBean.getBrief());
+        mTvName.setText(username);
+        mEtNickName.setText(userBean.getNickname());
+        Glide.with(mContext).load(Constant.BASE_URL + userBean.getIcon())
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(15)).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true))
                 .into(mIvAvatar);
 

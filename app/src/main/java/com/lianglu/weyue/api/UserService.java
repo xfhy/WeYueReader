@@ -123,7 +123,7 @@ public interface UserService {
     Observable<BaseData<String>> userFeddBack(@Field("qq") String qq, @Field("feedback") String feedback);
 
     /**
-     * 用户反馈
+     * 更新
      *
      * @return
      */
